@@ -1,4 +1,5 @@
-import questionary #import questionary module for interactive command line prompts
+import questionary  # import questionary module for interactive command line prompts
+
 
 def Questionary():
     questionary.text("What's your first name").ask()
@@ -15,11 +16,11 @@ def Questionary():
         choices=["Order a pizza", "Make a reservation", "Ask for opening hours"],
     ).ask()
 
-    questionary.checkbox(
-        "Select toppings", choices=["foo", "bar", "bazz"]
-    ).ask()
+    questionary.checkbox("Select toppings", choices=["foo", "bar", "bazz"]).ask()
 
     questionary.path("Path to the projects version file").ask()
+
+
 def menu_Keranjang():
     pilihan = questionary.select(
         "Menu Keranjang Belanja:",
@@ -35,9 +36,11 @@ def menu_Keranjang():
     match pilihan:
         case "Lihat Daftar Keranjang Belanja":
             from daftar_keranjang_belanja import daftar_Keranjang_Belanja
+
             daftar_Keranjang_Belanja()
         case "Lanjut ke Pembayaran":
             from lanjut_pembayaran import Lanjut_Pembayaran
+
             Lanjut_Pembayaran()
         case "Tambah Barang ke Keranjang":
             # fungsi untuk menambah barang ke keranjang
@@ -48,5 +51,6 @@ def menu_Keranjang():
         case "Kembali ke Menu Utama User":
             # fungsi untuk kembali ke menu utama user
             pass
+
 
 menu_Keranjang()

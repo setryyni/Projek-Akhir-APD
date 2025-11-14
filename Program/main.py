@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-import os, random
 from register_akun import register
 
 # from admin import tambah, hapus, kelola, lihat_data, update, diskon
@@ -7,33 +5,31 @@ from user import history, pembelian, status
 import questionary as qs
 
 history_pesanan = {}
-akun = {"admin": ["admin123", "admin"]}
+akun = {1: {"username": "admin", "password": "admin123", "hak": "admin"}}
 daftar_pesanan = {}
 daftar_barang = {
-     1: {"nama": "Roti Tawar", "harga": 12000},
-     2: {"nama": "Konohamie Mi Instan Goreng", "harga": 3200},
-     3: {"nama": "Konohamie Mi Instan Kari Ayam", "harga": 3200},
-     4: {"nama": "Geng-Geng Wafer Chocolate", "harga": 9900},
-     5: {"nama": "Silver King", "harga": 25000},
-     6: {"nama": "Lolari Sweat", "harga": 8000},
-     7: {"nama": "Bad Day", "harga": 13000},
-     8: {"nama": "Konohamilk", "harga": 14000},
-     9: {"nama": "Youzone", "harga": 16000},
-     10: {"nama": "Beras 5KG", "harga": 77000}
-} #nomor..: {nama:, harga:}
+    1: {"nama": "Roti Tawar", "harga": 12000},
+    2: {"nama": "Konohamie Mi Instan Goreng", "harga": 3200},
+    3: {"nama": "Konohamie Mi Instan Kari Ayam", "harga": 3200},
+    4: {"nama": "Geng-Geng Wafer Chocolate", "harga": 9900},
+    5: {"nama": "Silver King", "harga": 25000},
+    6: {"nama": "Lolari Sweat", "harga": 8000},
+    7: {"nama": "Bad Day", "harga": 13000},
+    8: {"nama": "Konohamilk", "harga": 14000},
+    9: {"nama": "Youzone", "harga": 16000},
+    10: {"nama": "Beras 5KG", "harga": 77000},
+}  # nomor..: {nama:, harga:}
 keranjang_belanja = {}
 riwayat_transaksi = {}
-waktu_pembelian = []
-waktu_sampai = []
+
 
 if __name__ == "__main__":
     while True:
         # regist
-        username = register(akun)
-        hak_akun = akun[username][1]
-
-        match hak_akun:
-
+        login = register(akun)
+        username = login[0]
+        hak = login[1]
+        match hak:
             # user program
             case "user":
                 while True:
@@ -53,12 +49,7 @@ if __name__ == "__main__":
                             continue
 
                         case "Status Pesanan":
-                            status(
-                                daftar_pesanan,
-                                waktu_sampai,
-                                waktu_pembelian,
-                                history_pesanan,
-                            )
+                            status(riwayat_transaksi, history_pesanan, username)
                             continue
 
                         case "History Pesanan":
@@ -66,6 +57,7 @@ if __name__ == "__main__":
                             continue
 
                         case "Keluar":
+                            print("Datang Kembali Ya")
                             break
             # admin program
             case "admin":
@@ -80,7 +72,23 @@ if __name__ == "__main__":
                             "Tampilkan Data Penjualan",
                             "Tambahkan Diskon Barang",
                             "Kelola Akun User",
+                            "Keluar",
                         ],
                     ).ask()
-            case "Keluar":
-                break
+                    match pilihan:
+                        case "Tambah Daftar Barang":
+                            pass
+                        case "Tampilkan Daftar Barang":
+                            pass
+                        case "Update Daftar Barang":
+                            pass
+                        case "Hapus Daftar Barang":
+                            pass
+                        case "Tampilkan Data Penjualan":
+                            pass
+                        case "Tambahkan Diskon Barang":
+                            pass
+                        case "Kelola Akun User":
+                            pass
+                        case "Keluar":
+                            break
