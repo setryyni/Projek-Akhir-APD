@@ -21,3 +21,4 @@ def list_data_pemasukan():
 
     except FileNotFoundError:
         print("Belum ada data pemasukan.")
+list_data_pemasukan()
