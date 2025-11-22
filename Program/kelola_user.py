@@ -109,7 +109,6 @@ def ubah_akun():
 
     print("\nAkun berhasil diperbarui!")
 
-
 # ================= HAPUS =================
 def hapus_akun():
     if not akun:
@@ -134,5 +133,4 @@ def hapus_akun():
     if konfirmasi:
         del akun[idAkun]
         print("\nAkun berhasil dihapus!\n")
-
 kelola_user()
