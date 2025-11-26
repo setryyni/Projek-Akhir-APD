@@ -1,11 +1,13 @@
-from prettytable import PrettyTable
+from prettytable import PrettyTable, TableStyle
 from datetime import datetime, timedelta, timezone as timedate
 import random, sys, questionary as qs
 from copy import deepcopy
 import variabel_global as var
 from fungsi import clear_terminal
 from tambah_ke_keranjang import Tambah_Barang_ke_Keranjang
+from colorama import init, Fore, Style
 
+init(autoreset=True)
 # Untuk menghindari overwrite data lama terhadap data baru, import variabel_global, jangan pakai from variabel_global karena hanya akan menjadi referensi bukan merujuk ke variabel asli
 
 
@@ -41,9 +43,11 @@ def menu_Keranjang(username):
 def daftar_Keranjang_Belanja(username):
     # deklarasi tabel_keranjang sebagai objek PrettyTable
     tabel_keranjang = PrettyTable()
+    tabel_keranjang.set_style(TableStyle.SINGLE_BORDER)
     tabel_keranjang.field_names = ["No", "Nama Produk", "Jumlah", "Subtotal"]
     print("")
     tabel_keranjang.align["Nama Produk"] = "l"
+    tabel_keranjang.align["Harga"] = "l"
     tabel_keranjang.align["Subtotal"] = "l"
     # import shared data lazily
 
@@ -70,6 +74,7 @@ def daftar_Keranjang_Belanja(username):
 def Lanjut_Pembayaran(username):
     # kalau tidak ada produk di keranjang belanja
     # import shared state lazily
+    daftar_Keranjang_Belanja(username)
     if var.keranjang_belanja[username]:
         try:
             not var.keranjang_belanja[username]
@@ -86,10 +91,10 @@ def Lanjut_Pembayaran(username):
             # Simpan snapshot keranjang beserta waktu transaksi
             key_akhir = len(var.riwayat_transaksi[username]) + 1
             var.riwayat_transaksi[username][key_akhir] = {
-                "waktu_pembelian": datetime.now(),
+                "waktu_pembelian": datetime.now().replace(microsecond=0),
                 "barang": deepcopy(var.keranjang_belanja[username]),
-                "waktu_estimasi": datetime.now()
-                + timedelta(minutes=random.choice([1, 2, 3])),
+                "waktu_estimasi": datetime.now().replace(microsecond=0)
+                + timedelta(seconds=random.choice([15, 20])),
             }
             var.keranjang_belanja[username].clear()
             print("Kembali ke menu customer...\n")
@@ -104,19 +109,25 @@ def Lanjut_Pembayaran(username):
 
 
 def hapus_Produk_Keranjang(username):
-    daftar_Keranjang_Belanja(username)
-    salinan_keranjang_belanja = deepcopy(var.keranjang_belanja)
-    key_akhir = len(var.keranjang_belanja[username].keys())
-    pilihan_hapus = qs.text("Masukan Id Barang Yang Di Hapus : ").ask()
-    if (
-        pilihan_hapus.isdigit()
-        and int(pilihan_hapus) >= 1
-        or int(pilihan_hapus) <= key_akhir
-    ):
-        for id, barang in var.keranjang_belanja[username].items():
-            for i in range(int(pilihan_hapus), key_akhir):
-                salinan_keranjang_belanja[username][i] = barang
-            del salinan_keranjang_belanja[username][key_akhir]
-        var.keranjang_belanja[username] = deepcopy(salinan_keranjang_belanja[username])
+    if var.keranjang_belanja[username]:
+        daftar_Keranjang_Belanja(username)
+        salinan_keranjang_belanja = deepcopy(var.keranjang_belanja)
+        key_akhir = len(var.keranjang_belanja[username].keys())
+        pilihan_hapus = qs.text("Masukan Id Barang Yang Di Hapus : ").ask()
+        if (
+            pilihan_hapus.isdigit()
+            and int(pilihan_hapus) >= 1
+            or int(pilihan_hapus) <= key_akhir
+        ):
+            for id, barang in var.keranjang_belanja[username].items():
+                for i in range(int(pilihan_hapus), key_akhir):
+                    salinan_keranjang_belanja[username][i] = barang
+                del salinan_keranjang_belanja[username][key_akhir]
+            var.keranjang_belanja[username] = deepcopy(
+                salinan_keranjang_belanja[username]
+            )
+        else:
+            print("Input Tidak Valid")
     else:
-        print("Input Tidak Valid")
+        print("Keranjang Belanja Mu Masih Kosong")
+        return

@@ -1,9 +1,12 @@
-from prettytable import PrettyTable
+from prettytable import PrettyTable, TableStyle
 from datetime import datetime, timedelta
 from copy import deepcopy
 from fungsi import clear_terminal
 import pandas as pd
 import variabel_global as var
+from colorama import init, Fore, Style
+
+init(autoreset=True)
 
 
 def status(username):
@@ -11,9 +14,10 @@ def status(username):
         # Tampilkan Status Pesanan
         print("Berikut Daftar Status Pesanan Mu")
         salinan_riwayat = deepcopy(var.riwayat_transaksi)
-        for no, i in enumerate(var.riwayat_transaksi[username].values(), start=1):
+        for no, i in var.riwayat_transaksi[username].items():
             tabel_status = PrettyTable()
             total = 0
+            tabel_status.set_style(TableStyle.SINGLE_BORDER)
             tabel_status.field_names = ["No", "Nama Produk", "Harga", "Jumlah"]
             for id, barang in enumerate(i["barang"].values(), start=1):
                 tabel_status.add_row(
@@ -28,9 +32,18 @@ def status(username):
             if i["waktu_estimasi"] <= datetime.now():
                 # barang sudah sampai akan  di hapus dari status Pesanan
                 print("Barang Pesanan Mu Sudah Sampai \n")
+                # lakukan salinan riwayat yang sudah sampai ke history
                 var.history_pesanan[username][
                     len(var.history_pesanan[username]) + 1
-                ] = salinan_riwayat[username].pop(no)
+                ] = deepcopy(salinan_riwayat[username][no])
+                # hapus riwayat yang sudah sampai
+                key_akhir = len(salinan_riwayat)
+                for key in range(no, key_akhir):
+                    if key < key_akhir:
+                        salinan_riwayat[username][no] = salinan_riwayat[username][
+                            no + 1
+                        ]
+                del salinan_riwayat[username][no]
 
                 # menambah data barang yang telah sampai ke data pemasukan
                 for id, pesanan in enumerate(
@@ -38,7 +51,11 @@ def status(username):
                 ):
                     for barang in pesanan["barang"].values():
                         data_baru = {
-                            "Tanggal": [pesanan["waktu_estimasi"]],
+                            "Tanggal": [
+                                pesanan["waktu_estimasi"].replace(
+                                    hour=0, minute=0, second=0
+                                )
+                            ],
                             "Nama Barang": [barang["nama"]],
                             "Harga": [barang["harga"]],
                             "Jumlah": [barang["jumlah"]],
@@ -49,8 +66,13 @@ def status(username):
                     )
 
             else:
-                print("Barang Pesanan Mu Belum Sampai \n")
-            var.riwayat_transaksi[username] = deepcopy(salinan_riwayat[username])
+                print(
+                    f"Barang Pesanan Mu Belum Sampai, Estimasi : ",
+                    end="",
+                )
+                print(Fore.YELLOW + f"{i["waktu_estimasi"]} \n")
+        var.riwayat_transaksi[username] = deepcopy(salinan_riwayat[username])
+
     else:
         clear_terminal()
         print("Maaf Belum Ada Daftar Pesanan Mu")

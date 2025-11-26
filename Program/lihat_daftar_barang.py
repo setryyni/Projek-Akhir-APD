@@ -1,4 +1,4 @@
-from prettytable import PrettyTable
+from prettytable import PrettyTable, TableStyle
 import variabel_global as var
 
 
@@ -6,6 +6,7 @@ import variabel_global as var
 def listProduk():
     if var.daftar_barang:
         tabel = PrettyTable()
+        tabel.set_style(TableStyle.SINGLE_BORDER)
         tabel.clear_rows()  # bersihkan baris lama pada objek tabel
         tabel.field_names = ["No", "Nama Produk", "Harga", "Stock"]
         tabel.align["Nama Produk"] = "l"

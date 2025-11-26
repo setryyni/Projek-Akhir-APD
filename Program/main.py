@@ -8,29 +8,22 @@ from hapus_produk import hapusProduk
 from checkout import menu_Keranjang
 from history_pembelian import history
 from tambah_diskon import diskon
-from fungsi import clear_terminal
+from fungsi import clear_terminal, Loading
 from kelola_user import Kelola_user
+from lihat_data_pemasukan import list_data_pemasukan
 import time
 import questionary as qs
 import variabel_global as var
 
 if __name__ == "__main__":
-    # animasi loading
-    loading = ["l", "o", "a", "d", "i", "n", "g"]
-    batas = 0
-    while batas <= 3:
-        for i in loading:
-            print(f"{i}", end="", flush=True)
-            time.sleep(0.1)
-        clear_terminal()
-        batas += 1
 
+    Loading()
     while True:
 
         # regist
         reg = register()
-        hak_akun = reg[1]
-        username = reg[0]
+        hak_akun = reg.get("hak")
+        username = reg.get("username")
 
         match hak_akun:
             # user program
@@ -88,7 +81,7 @@ if __name__ == "__main__":
                         case "Hapus Daftar Barang":
                             hapusProduk()
                         case "Tampilkan Data Penjualan":
-                            pass
+                            list_data_pemasukan()
                         case "Tambahkan Diskon Barang":
                             diskon()
                         case "Kelola Akun User":

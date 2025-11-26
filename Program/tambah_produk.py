@@ -1,8 +1,10 @@
 import questionary as qs
 import variabel_global as var
+from lihat_daftar_barang import listProduk
 
 
 def tambah_barang():
+    listProduk()
     print("\n=== Tambah Barang ===")
     nama = qs.text("Nama barang:").ask()
     harga = qs.text("Harga barang:").ask()

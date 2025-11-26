@@ -4,6 +4,7 @@ import variabel_global as var
 
 
 def update_barang():
+
     if not var.daftar_barang:
         print("Belum ada barang untuk diupdate.")
         return
